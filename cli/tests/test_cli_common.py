@@ -91,9 +91,8 @@ class TestEstimatedTimeRemaining:
             (0, 37, 99),  # if `download_rate == 0`
         ),
     )
-    def test_raises_zero_division_error(self, common_obj, test_input, time_time_100):
-        with pytest.raises(ZeroDivisionError):
-            common_obj.estimated_time_remaining(*test_input)
+    def test_unknown_when_rate_unavailable(self, common_obj, test_input, time_time_100):
+        assert common_obj.estimated_time_remaining(*test_input) == "?"
 
 
 class TestFormatSeconds:
