@@ -570,9 +570,17 @@ class Common:
     def estimated_time_remaining(bytes_downloaded, total_bytes, started):
         now = time.time()
         time_elapsed = now - started  # in seconds
+        # Stalled or just-started transfers can hit the GUI ETA path with
+        # zero elapsed time or zero bytes; never raise ZeroDivisionError.
+        if time_elapsed <= 0 or bytes_downloaded <= 0:
+            return "?"
         download_rate = bytes_downloaded / time_elapsed
         remaining_bytes = total_bytes - bytes_downloaded
+        if download_rate <= 0:
+            return "?"
         eta = remaining_bytes / download_rate
+        if eta < 0:
+            return Common.format_seconds(0)
         return Common.format_seconds(eta)
 
     @staticmethod
